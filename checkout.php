@@ -3,7 +3,7 @@ session_start();
 require_once 'db.php';
 
 try {
-    // 1. Create the Orders Table
+    // create the Orders Table
     $sqlOrders = "CREATE TABLE IF NOT EXISTS Orders (
         order_id INT AUTO_INCREMENT PRIMARY KEY,
         user_id INT NOT NULL,
@@ -15,7 +15,7 @@ try {
     ) ENGINE=InnoDB";
     $pdo->exec($sqlOrders);
 
-    // 2. Create the Order_Items Table
+    // create the Order_Items Table
     $sqlOrderItems = "CREATE TABLE IF NOT EXISTS Order_Items (
         item_id INT AUTO_INCREMENT PRIMARY KEY,
         order_id INT NOT NULL,
@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         // loop through cart to insert items and update stock
         foreach ($_SESSION['cart'] as $pid => $qty) {
-            // Get current price to lock it into the order history
+            // get current price to lock it into the order history
             $stmtPrice = $pdo->prepare("SELECT price, stock_quantity FROM Products WHERE product_id = ?");
             $stmtPrice->execute([$pid]);
             $product = $stmtPrice->fetch();
