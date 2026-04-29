@@ -53,7 +53,7 @@ $products = $pdo->query("SELECT * FROM Products ORDER BY product_id DESC")->fetc
 
 <div class="container">
     <h2>Candy Shop Administration</h2>
-    <p><a href="index_candy.php">⬅ Back to Storefront</a></p>
+    <p><a href="index.php">⬅ Back to Storefront</a></p>
 
     <div class="add-form">
         <h3>Add New Candy to Stock</h3>
