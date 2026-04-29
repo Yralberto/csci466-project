@@ -3,7 +3,7 @@ require_once 'db.php';
 
 $message = "";
 
-// --- 1. HANDLE ADDING NEW PRODUCT ---
+// adding new product
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_product'])) {
     $name = $_POST['name'] ?? '';
     $desc = $_POST['description'] ?? '';
@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_product'])) {
     }
 }
 
-// --- 2. FETCH ALL PRODUCTS TO SHOW ON PAGE ---
+// fetch products to show on page
 $products = $pdo->query("SELECT * FROM Products ORDER BY product_id DESC")->fetchAll();
 ?>
 
