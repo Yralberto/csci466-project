@@ -54,7 +54,7 @@ if (!empty($_SESSION['cart'])) {
     <h2>Shopping Cart</h2>
 
     <?php if (empty($cart_items)): ?>
-        <p>Your cart is empty. <a href="index_candy.php">Go shopping</a></p>
+        <p>Your cart is empty. <a href="index.php">Go shopping</a></p>
     <?php else: ?>
         <table>
             <thead>
