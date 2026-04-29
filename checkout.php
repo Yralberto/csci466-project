@@ -31,7 +31,7 @@ try {
 }
 
 if (empty($_SESSION['cart'])) {
-    header("Location: index_candy.php");
+    header("Location: index.php");
     exit;
 }
 
