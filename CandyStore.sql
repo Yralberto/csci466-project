@@ -1,50 +1,69 @@
-DROP TABLE IF EXISTS ORDER_DETAILS;
-DROP TABLE IF EXISTS ORDERS;
-DROP TABLE IF EXISTS PRODUCT;
-DROP TABLE IF EXISTS USERS;
+-- RESET TABLES (drops existing tables so script can rerun cleanly)
 
-USE z1929331;
+DROP TABLE IF EXISTS Order_Items;
+DROP TABLE IF EXISTS Orders;
+DROP TABLE IF EXISTS Products;
+DROP TABLE IF EXISTS Users;
 
-CREATE TABLE USERS (
-    user_id INT PRIMARY KEY,
+
+-- DATABASE SELECTION
+-- IMPORTANT: Replace "Z-ID" with your actual database name.
+-- This is a placeholder so teammates can configure their own
+-- database without exposing sensitive info.
+
+USE Z-ID;
+
+-- USERS TABLE
+-- Stores login info and role (customer or admin)
+
+CREATE TABLE Users (
+    user_id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50),
     password VARCHAR(50),
-    ROLE VARCHAR(20)
+    role VARCHAR(20)
 );
 
+-- PRODUCTS TABLE
+-- Stores all candy items available in the store
 
-CREATE TABLE PRODUCT (
-    product_id INT PRIMARY KEY,
-    NAME VARCHAR(200),
+CREATE TABLE Products (
+    product_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(200),
     price DECIMAL(10,2),
     stock_quantity INT,
-    DESCRIPTION TEXT
+    description TEXT
+
 );
 
+-- ORDERS TABLE
+-- Stores customer orders and overall order status
 
-CREATE TABLE ORDERS (
-    order_id INT PRIMARY KEY,
+CREATE TABLE Orders (
+    order_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT,
-    order_date DATE,
-    status VARCHAR(50),
+    order_date DATETIME, -- had to change DATE -> DATETIME to connect to peer's file
+    status VARCHAR(50) DEFAULT 'Processing',
     total_amount DECIMAL(10, 2),
     shipping_address TEXT,
-    FOREIGN KEY (user_id) REFERENCES USERS(user_id)
+    billing_address TEXT,
+    FOREIGN KEY (user_id) REFERENCES Users(user_id)
 );
 
+-- ORDER ITEMS TABLE
+-- Stores individual products inside each order
 
-CREATE TABLE ORDER_DETAILS (
+CREATE TABLE Order_Items (
+    item_id INT AUTO_INCREMENT PRIMARY KEY,
     order_id INT,
     product_id INT,
     quantity INT,
-    purchase_price DECIMAL(10,2),
-    PRIMARY KEY (order_id, product_id),
-    FOREIGN KEY (order_id) REFERENCES ORDERS(order_id),
-    FOREIGN KEY (product_id) REFERENCES PRODUCT(product_id)
+    price_at_purchase DECIMAL(10,2),
+    FOREIGN KEY (order_id) REFERENCES Orders(order_id),
+    FOREIGN KEY (product_id) REFERENCES Products(product_id)
 );
 
-
-INSERT INTO USERS (user_id, username, password, ROLE) VALUES 
+-- SAMPLE USERS (for testing login + roles but should be able to login sucessfully)
+INSERT INTO Users (user_id, username, password, role) VALUES 
 (1, 'bob', 'pass123', 'customer'),
 (2, 'angieflower', 'an000', 'customer'),
 (3, 'sugarcube93', 'moon29', 'customer'),
@@ -52,8 +71,8 @@ INSERT INTO USERS (user_id, username, password, ROLE) VALUES
 (5, 'TimTim', 'Tm1234', 'customer'),
 (6, 'Admin', 'Password4', 'Admin');
 
-
-INSERT INTO PRODUCT (product_id, NAME, price, stock_quantity, DESCRIPTION) VALUES
+-- SAMPLE PRODUCTS (inventory for store)
+INSERT INTO Products (product_id, name, price, stock_quantity, description) VALUES
 (1, 'Pop Rocks', 0.75, 200, 'Popping candy that crackles and bursts in your mouth'),
 (2, 'Skittles Pack', 1.00, 50, 'Fruit flavored colorful chewy candy'),
 (3, 'Chocolate Milk', 2.50, 110, 'Classic milk chocolate flavored drink'),
@@ -75,21 +94,21 @@ INSERT INTO PRODUCT (product_id, NAME, price, stock_quantity, DESCRIPTION) VALUE
 (19, 'Ice Cream Cup', 2.25, 20, 'Strawberry, vanilla, and chocolate flavors'),
 (20, 'Protein Bar', 2.00, 10, 'High protein bar (tastes bad but works)');
 
+-- SAMPLE ORDERS (used for testing checkout + tracking and make sure they are able to be visible)
+INSERT INTO Orders (order_id, user_id, order_date, status, total_amount, shipping_address, billing_address) VALUES
+(1, 1, '2026-04-20', 'Processing', 22.50, '123 Main St', '123 Main St'),
+(2, 2, '2026-04-20', 'Processing', 7.50, '55th Oak Pl', '55th Oak Pl'),
+(3, 4, '2026-04-21', 'Processing', 9.00, '456 S Maplewood St', '456 S Maplewood St'),
+(4, 4, '2026-04-23', 'Processing', 14.00, '1001 N Purple Lane', '55th Oak Pl'),
+(5, 3, '2026-04-23', 'Processing', 5.50, '879 W Peanut Dr', '879 W Peanut Dr'),
+(6, 5, '2026-04-25', 'Processing', 14.00, '1001 N Purple Lane', '1001 N Purple Lane'),
+(7, 5, '2026-04-25', 'Processing', 20.00, '879 W Peanut Dr 2nd floor', '1001 N Purple Lane');
 
-INSERT INTO ORDERS (order_id, user_id, order_date, status, total_amount, shipping_address) VALUES
-(1, 1, '2026-04-20', 'Processing', 22.50, '123 Main St'),
-(2, 2, '2026-04-20', 'Processing', 7.50, '55th Oak Pl'),
-(3, 4, '2026-04-21', 'Processing', 9.00, '456 S Maplewood St'),
-(4, 4, '2026-04-23', 'Processing', 14.00, '1001 N Purple Lane'),
-(5, 3, '2026-04-23', 'Processing', 5.50, '879 W Peanut Dr'),
-(6, 5, '2026-04-25', 'Processing', 14.00, '1001 N Purple Lane'),
-(7, 5, '2026-04-25', 'Processing', 20.00, '879 W Peanut Dr 2nd floor');
-
-
-INSERT INTO ORDER_DETAILS (order_id, product_id, quantity, purchase_price) VALUES
+-- SAMPLE ORDER ITEMS (links products to orders)
+INSERT INTO Order_Items (order_id, product_id, quantity, price_at_purchase) VALUES
 -- Make sure the numbers match on the website. did the math already so there shouldnt be any confuscion and just need to check
 
-
+-- Just make sure its calculating correctly, the following are sample with the math already done so it should show and match it.
 -- Format:
 -- (order id, product id, quantity, and purchase Price)
 
